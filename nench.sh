@@ -57,7 +57,7 @@ printf '\n'
 printf 'ioping: seek rate\n    '
 ./ioping.static -R -w 5 /var/tmp | tail -n 1
 printf 'ioping: sequential speed\n    '
-./ioping.static -R -w 5 /var/tmp | tail -n 2 | head -n 1
+./ioping.static -RL -w 5 /var/tmp | tail -n 2 | head -n 1
 
 printf '\n'
 
