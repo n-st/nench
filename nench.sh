@@ -100,8 +100,8 @@ then
     timeout 50 wget -4 -O /dev/null http://mirror.nl.leaseweb.net/speedtest/100mb.bin 2>&1 | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
-    printf '    Linode Dallas (US):   '
-    timeout 50 wget -4 -O /dev/null http://speedtest.dallas.linode.com/100MB-dallas.bin 2>&1 | \
+    printf '    Softlayer DAL (US):   '
+    timeout 50 wget -4 -O /dev/null http://speedtest.dal01.softlayer.com/downloads/test100.zip 2>&1 | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    Online.net (FR):      '
@@ -129,8 +129,8 @@ then
     timeout 50 wget -6 -O /dev/null http://mirror.nl.leaseweb.net/speedtest/100mb.bin 2>&1 | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
-    printf '    Linode Dallas (US):   '
-    timeout 50 wget -6 -O /dev/null http://speedtest.dallas.linode.com/100MB-dallas.bin 2>&1 | \
+    printf '    Softlayer DAL (US):   '
+    timeout 50 wget -6 -O /dev/null http://speedtest.dal01.softlayer.com/downloads/test100.zip 2>&1 | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    Online.net (FR):      '
