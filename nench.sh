@@ -7,7 +7,8 @@
 #   speedtests while retaining useful European and North American POPs
 #####
 
-#wget -q -r http://bench.wget.racing/ioping.static -O ioping.static
+wget -q -r http://bench.wget.racing/ioping.static -O ioping.static
+chmod +x ioping.static
 
 # Basic info
 printf 'Processor:    '
