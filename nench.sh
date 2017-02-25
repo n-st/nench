@@ -7,6 +7,13 @@
 #   speedtests while retaining useful European and North American POPs
 #####
 
+printf '%s\n' '-------------------------'
+printf ' nench.sh benchmark\n'
+date -u '+ %F %T UTC'
+printf '%s\n' '-------------------------'
+
+printf '\n'
+
 wget -q -r http://bench.wget.racing/ioping.static -O ioping.static
 chmod +x ioping.static
 
@@ -145,3 +152,6 @@ else
     printf 'No IPv6 connectivity detected\n'
 fi
 
+printf '%s\n' '-------------------------'
+
+printf '\n'
