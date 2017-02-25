@@ -34,12 +34,14 @@ printf '\n'
 # CPU tests
 export TIMEFORMAT='%3R seconds'
 
-# bzip2 200MB of zeroes
+printf 'CPU: SHA256-hashing 500 MB\n    '
+time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
+    sha256sum > /dev/null
+
 printf 'CPU: bzip2-compressing 500 MB\n    '
 time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
     bzip2 > /dev/null
 
-# AES encryption
 printf 'CPU: AES-encrypting 500 MB\n    '
 time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
     openssl enc -e -aes-256-cbc -pass pass:12345678 > /dev/null
