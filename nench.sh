@@ -155,3 +155,7 @@ fi
 printf '%s\n' '-------------------------'
 
 printf '\n'
+
+# delete downloaded ioping binary if script has been run straight from a pipe
+# (rather than a downloaded file)
+[[ -t 0 ]] || rm -f ioping.static
