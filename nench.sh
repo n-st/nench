@@ -31,6 +31,11 @@ uname -s -r -m
 
 printf '\n'
 
+printf 'Disks:\n'
+lsblk --nodeps --noheadings --output NAME,SIZE,ROTA --exclude 1,2,11 | sort | awk '{if ($3 == 0) {$3="SSD"} else {$3="HDD"}; print}' | column -t
+
+printf '\n'
+
 # CPU tests
 export TIMEFORMAT='%3R seconds'
 
