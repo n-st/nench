@@ -9,5 +9,5 @@ Usage example
 -------------
 
 ```
-(curl bench.wget.racing | bash; curl bench.wget.racing | bash) | tee nench.log
+(curl -s bench.wget.racing | bash; curl -s bench.wget.racing | bash) 2>&1 | tee nench.log
 ```
