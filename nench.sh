@@ -24,7 +24,8 @@ then
     printf 'Swap:         -\n'
 else
     printf 'Swap:         '
-    free -h | awk 'NR==4 {print $2}'
+    free -h | awk 'NR==4 {printf $2}'
+    printf '\n'
 fi
 printf 'Kernel:       '
 uname -s -r -m
