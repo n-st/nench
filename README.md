@@ -8,6 +8,9 @@ Current version always available at https://github.com/n-st/nench
 - reduced number of speedtests (9 x 100 MB), while retaining useful European
   and North American POPs
 - runs IPv6 speedtest by default (if the server has IPv6 connectivity)
+- has a 50-second timeout for each speedtest, so you don't end up waiting 10
+  minutes for that one slow speedtest from halfway around the globe
+  (this means that any speedtest result < 2 MB/s will be squelched)
 
 Usage example
 -------------
