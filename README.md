@@ -12,6 +12,30 @@ Current version always available at https://github.com/n-st/nench
   minutes for that one slow speedtest from halfway around the globe
   (this means that any speedtest result < 2 MB/s will be squelched)
 
+The script was originally intended to be used only by me, so I didn't put much
+effort into ensuring safety, security, and interoperability.  
+I welcome any improvements, just send me a pull request.
+
+Disclaimer
+----------
+
+You've probably noticed that the usage examples below have you directly run a
+script from an unauthenticated source (as so many "easy-install" and benchmark
+scripts do).
+
+I didn't think I'd have to mention that this is a **potential security risk** —
+really, if you're at the point where you're benchmarking Linux VMs, I would
+assume you know how much harm a rogue shell script could potentially do to your
+system…
+
+What's more, `nench.sh` downloads a statically built binary to run the IO
+latency tests. I assure you it is and always will be a clean unmodified build
+of `ioping`, but how do you know you can trust me?
+
+So, basically: **use `nench.sh` at your own risk**, and preferably not on
+production systems (which is a bad idea anyway, because it will hammer your
+harddisk and network for up to several minutes).
+
 Usage example
 -------------
 
