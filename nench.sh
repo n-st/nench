@@ -13,6 +13,16 @@
 # or `wget -qO- bench.wget.racing | bash`
 ##########
 
+command_exists()
+{
+    command -v $@ > /dev/null 2>&1
+}
+
+Bps_to_MiBps()
+{
+    awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "error" } }'
+}
+
 printf '%s\n' '-------------------------'
 printf ' nench.sh benchmark\n'
 date -u '+ %F %T UTC'
@@ -54,16 +64,37 @@ printf '\n'
 export TIMEFORMAT='%3R seconds'
 
 printf 'CPU: SHA256-hashing 500 MB\n    '
-time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
-    sha256sum > /dev/null
+if command_exists sha256sum
+then
+    time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
+        sha256sum > /dev/null
+else
+    if command_exists sha256
+    then
+        time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
+            sha256sum > /dev/null
+    else
+        printf '[no SHA256 command found]\n'
+    fi
+fi
 
 printf 'CPU: bzip2-compressing 500 MB\n    '
-time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
-    bzip2 > /dev/null
+if command_exists bzip2
+then
+    time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
+        bzip2 > /dev/null
+else
+    printf '[no bzip2 command found]\n'
+fi
 
 printf 'CPU: AES-encrypting 500 MB\n    '
-time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
-    openssl enc -e -aes-256-cbc -pass pass:12345678 > /dev/null
+if command_exists openssl
+then
+    time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
+        openssl enc -e -aes-256-cbc -pass pass:12345678 > /dev/null
+else
+    printf '[no openssl command found]\n'
+fi
 
 printf '\n'
 
@@ -107,23 +138,23 @@ then
 
     printf '    Cachefly CDN:         '
     curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://cachefly.cachefly.net/100mb.test | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
     printf '    Leaseweb (NL):        '
     curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
     printf '    Softlayer DAL (US):   '
     curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
     printf '    Online.net (FR):      '
     curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://ping.online.net/100Mo.dat | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
     printf '    OVH BHS (CA):         '
     curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://proof.ovh.ca/files/100Mio.dat | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
 else
     printf 'No IPv4 connectivity detected\n'
@@ -140,19 +171,19 @@ then
 
     printf '    Leaseweb (NL):        '
     curl -6 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
     printf '    Softlayer DAL (US):   '
     curl -6 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
     printf '    Online.net (FR):      '
     curl -6 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://ping6.online.net/100Mo.dat | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
     printf '    OVH BHS (CA):         '
     curl -6 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://proof.ovh.ca/files/100Mio.dat | \
-        awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "timeout (< 2MB/s)" } }'
+        Bps_to_MiBps
 
 else
     printf 'No IPv6 connectivity detected\n'
