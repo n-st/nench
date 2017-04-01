@@ -106,23 +106,23 @@ then
     printf '\n'
 
     printf '    Cachefly CDN:         '
-    timeout 50 wget -4 -O /dev/null http://cachefly.cachefly.net/100mb.test 2>&1 | \
+    timeout 50 wget -4 -o /dev/stdout -O /dev/null http://cachefly.cachefly.net/100mb.test | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    Leaseweb (NL):        '
-    timeout 50 wget -4 -O /dev/null http://mirror.nl.leaseweb.net/speedtest/100mb.bin 2>&1 | \
+    timeout 50 wget -4 -o /dev/stdout -O /dev/null http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    Softlayer DAL (US):   '
-    timeout 50 wget -4 -O /dev/null http://speedtest.dal01.softlayer.com/downloads/test100.zip 2>&1 | \
+    timeout 50 wget -4 -o /dev/stdout -O /dev/null http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    Online.net (FR):      '
-    timeout 50 wget -4 -O /dev/null http://ping.online.net/100Mo.dat 2>&1 | \
+    timeout 50 wget -4 -o /dev/stdout -O /dev/null http://ping.online.net/100Mo.dat | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    OVH BHS (CA):         '
-    timeout 50 wget -4 -O /dev/null http://proof.ovh.ca/files/100Mio.dat 2>&1 | \
+    timeout 50 wget -4 -o /dev/stdout -O /dev/null http://proof.ovh.ca/files/100Mio.dat | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
 else
@@ -139,19 +139,19 @@ then
     printf '\n'
 
     printf '    Leaseweb (NL):        '
-    timeout 50 wget -6 -O /dev/null http://mirror.nl.leaseweb.net/speedtest/100mb.bin 2>&1 | \
+    timeout 50 wget -6 -o /dev/stdout -O /dev/null http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    Softlayer DAL (US):   '
-    timeout 50 wget -6 -O /dev/null http://speedtest.dal01.softlayer.com/downloads/test100.zip 2>&1 | \
+    timeout 50 wget -6 -o /dev/stdout -O /dev/null http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    Online.net (FR):      '
-    timeout 50 wget -6 -O /dev/null http://ping6.online.net/100Mo.dat 2>&1 | \
+    timeout 50 wget -6 -o /dev/stdout -O /dev/null http://ping6.online.net/100Mo.dat | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
     printf '    OVH BHS (CA):         '
-    timeout 50 wget -6 -O /dev/null http://proof.ovh.ca/files/100Mio.dat 2>&1 | \
+    timeout 50 wget -6 -o /dev/stdout -O /dev/null http://proof.ovh.ca/files/100Mio.dat | \
         awk '/\/dev\/null/ {speed=$3 $4} END {gsub(/\(|\)/,"",speed); if (speed ~ /null/) {print "timeout (< 2MB/s)"} else {print speed}}'
 
 else
