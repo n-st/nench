@@ -23,6 +23,12 @@ Bps_to_MiBps()
     awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "error" } }'
 }
 
+if ! command_exists curl
+then
+    printf '%s\n' 'This script requires curl, but it could not be found.' 1>&2
+    exit 1
+fi
+
 printf '%s\n' '-------------------------'
 printf ' nench.sh benchmark\n'
 date -u '+ %F %T UTC'
