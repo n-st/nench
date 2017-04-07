@@ -139,7 +139,7 @@ ipv4=$(curl -4 -s --max-time 5 http://icanhazip.com/)
 if [ -n "$ipv4" ]
 then
     printf 'IPv4 speedtests\n'
-    printf '    your IPv4:    %s\n' $ipv4
+    printf '    your IPv4:    %s\n' $(printf '%s\n' $ipv4 | sed 's!\(\([0-9a-f]\+[.:]\)\{3\}\).\+!\1xxxx!')
     printf '\n'
 
     printf '    Cachefly CDN:         '
@@ -172,7 +172,7 @@ ipv6=$(curl -6 -s --max-time 5 http://icanhazip.com/)
 if [ -n "$ipv6" ]
 then
     printf 'IPv6 speedtests\n'
-    printf '    your IPv6:    %s\n' $ipv6
+    printf '    your IPv6:    %s\n' $(printf '%s\n' $ipv6 | sed 's!\(\([0-9a-f]\+[.:]\)\{3\}\).\+!\1xxxx!')
     printf '\n'
 
     printf '    Leaseweb (NL):        '
