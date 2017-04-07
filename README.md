@@ -3,6 +3,8 @@ nench.sh ("new bench.sh")
 
 Current version always available at https://github.com/n-st/nench
 
+IPv4- and v6-enabled download at http://wget.racing/nench.sh
+
 - loosely based on the established freevps.us/bench.sh
 - includes CPU and ioping measurements
 - reduced number of speedtests (9 x 100 MB), while retaining useful European
@@ -40,9 +42,9 @@ Usage example
 -------------
 
 ```
-(curl -s bench.wget.racing | bash; curl -s bench.wget.racing | bash) 2>&1 | tee nench.log
+(curl -s wget.racing/nench.sh | bash; curl -s wget.racing/nench.sh | bash) 2>&1 | tee nench.log
 ```
 
 ```
-(wget -qO- bench.wget.racing | bash; wget -qO- bench.wget.racing | bash) 2>&1 | tee nench.log
+(wget -qO- wget.racing/nench.sh | bash; wget -qO- wget.racing/nench.sh | bash) 2>&1 | tee nench.log
 ```
