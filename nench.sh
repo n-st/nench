@@ -15,7 +15,7 @@
 
 command_exists()
 {
-    command -v $@ > /dev/null 2>&1
+    command -v "$@" > /dev/null 2>&1
 }
 
 Bps_to_MiBps()
@@ -23,8 +23,14 @@ Bps_to_MiBps()
     awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "error" } }'
 }
 
+redact_ip()
+{
+    printf '%s\n' "$1" | sed 's!\(\([0-9a-f]\+[.:]\)\{3\}\).\+!\1xxxx!'
+}
+
 finish()
 {
+    printf '\n'
     rm -f test_$$
     exit
 }
@@ -108,7 +114,7 @@ printf 'Frequency:    '
 awk -F: ' /cpu MHz/ {freq=$2} END {print freq " MHz"}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//'
 printf 'RAM:          '
 free -h | awk 'NR==2 {print $2}'
-if [ $(swapon -s | wc -l) -lt 2 ]
+if [ "$(swapon -s | wc -l)" -lt 2 ]
 then
     printf 'Swap:         -\n'
 else
@@ -172,7 +178,7 @@ ipv4=$(curl -4 -s --max-time 5 http://icanhazip.com/)
 if [ -n "$ipv4" ]
 then
     printf 'IPv4 speedtests\n'
-    printf '    your IPv4:    %s\n' $(printf '%s\n' $ipv4 | sed 's!\(\([0-9a-f]\+[.:]\)\{3\}\).\+!\1xxxx!')
+    printf '    your IPv4:    %s\n' "$(redact_ip "$ipv4")"
     printf '\n'
 
     printf '    Cachefly CDN:         '
@@ -205,7 +211,7 @@ ipv6=$(curl -6 -s --max-time 5 http://icanhazip.com/)
 if [ -n "$ipv6" ]
 then
     printf 'IPv6 speedtests\n'
-    printf '    your IPv6:    %s\n' $(printf '%s\n' $ipv6 | sed 's!\(\([0-9a-f]\+[.:]\)\{3\}\).\+!\1xxxx!')
+    printf '    your IPv6:    %s\n' "$(redact_ip "$ipv6")"
     printf '\n'
 
     printf '    Leaseweb (NL):        '
@@ -234,4 +240,4 @@ printf '\n'
 
 # delete downloaded ioping binary if script has been run straight from a pipe
 # (rather than a downloaded file)
-[[ -t 0 ]] || rm -f ioping.static
+[ -t 0 ] || rm -f ioping.static
