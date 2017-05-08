@@ -32,6 +32,28 @@ finish()
 # interrupted while dd is running
 trap finish EXIT INT TERM
 
+command_benchmark()
+{
+    if [ "$1" = "-q" ]
+    then
+        QUIET=1
+        shift
+    fi
+
+    if command_exists "$1"
+    then
+        time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
+            "$@" > /dev/null
+    else
+        if [ "$QUIET" -ne 1 ]
+        then
+            unset QUIET
+            printf '[command `%s` not found]\n' "$1"
+        fi
+        return 1
+    fi
+}
+
 dd_benchmark()
 {
     # returns IO speed in B/s
@@ -54,6 +76,11 @@ dd_benchmark()
                 else { print 1*io}
             }'
     rm -f test_$$
+}
+
+download_benchmark()
+{
+    curl --max-time 10 -so /dev/null -w '%{speed_download}\n' "$@"
 }
 
 if ! command_exists curl
@@ -103,37 +130,13 @@ printf '\n'
 export TIMEFORMAT='%3R seconds'
 
 printf 'CPU: SHA256-hashing 500 MB\n    '
-if command_exists sha256sum
-then
-    time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
-        sha256sum > /dev/null
-else
-    if command_exists sha256
-    then
-        time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
-            sha256sum > /dev/null
-    else
-        printf '[no SHA256 command found]\n'
-    fi
-fi
+command_benchmark -q sha256sum || command_benchmark -q sha256 || printf '[no SHA256 command found]\n'
 
 printf 'CPU: bzip2-compressing 500 MB\n    '
-if command_exists bzip2
-then
-    time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
-        bzip2 > /dev/null
-else
-    printf '[no bzip2 command found]\n'
-fi
+command_benchmark bzip2
 
 printf 'CPU: AES-encrypting 500 MB\n    '
-if command_exists openssl
-then
-    time dd if=/dev/zero bs=1M count=500 2> /dev/null | \
-        openssl enc -e -aes-256-cbc -pass pass:12345678 > /dev/null
-else
-    printf '[no openssl command found]\n'
-fi
+command_benchmark openssl enc -e -aes-256-cbc -pass pass:12345678
 
 printf '\n'
 
@@ -173,23 +176,23 @@ then
     printf '\n'
 
     printf '    Cachefly CDN:         '
-    curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://cachefly.cachefly.net/100mb.test | \
+    download_benchmark -4 http://cachefly.cachefly.net/100mb.test | \
         Bps_to_MiBps
 
     printf '    Leaseweb (NL):        '
-    curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
+    download_benchmark -4 http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
         Bps_to_MiBps
 
     printf '    Softlayer DAL (US):   '
-    curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
+    download_benchmark -4 http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
         Bps_to_MiBps
 
     printf '    Online.net (FR):      '
-    curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://ping.online.net/100Mo.dat | \
+    download_benchmark -4 http://ping.online.net/100Mo.dat | \
         Bps_to_MiBps
 
     printf '    OVH BHS (CA):         '
-    curl -4 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://proof.ovh.ca/files/100Mio.dat | \
+    download_benchmark -4 http://proof.ovh.ca/files/100Mio.dat | \
         Bps_to_MiBps
 
 else
@@ -206,19 +209,19 @@ then
     printf '\n'
 
     printf '    Leaseweb (NL):        '
-    curl -6 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
+    download_benchmark -6 http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
         Bps_to_MiBps
 
     printf '    Softlayer DAL (US):   '
-    curl -6 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
+    download_benchmark -6 http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
         Bps_to_MiBps
 
     printf '    Online.net (FR):      '
-    curl -6 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://ping6.online.net/100Mo.dat | \
+    download_benchmark -6 http://ping6.online.net/100Mo.dat | \
         Bps_to_MiBps
 
     printf '    OVH BHS (CA):         '
-    curl -6 --max-time 10 -so /dev/null -w '%{speed_download}\n' http://proof.ovh.ca/files/100Mio.dat | \
+    download_benchmark -6 http://proof.ovh.ca/files/100Mio.dat | \
         Bps_to_MiBps
 
 else
