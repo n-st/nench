@@ -23,6 +23,39 @@ Bps_to_MiBps()
     awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "error" } }'
 }
 
+finish()
+{
+    rm -f test_$$
+    exit
+}
+# make sure the dd test file is always deleted, even when the script is
+# interrupted while dd is running
+trap finish EXIT INT TERM
+
+dd_benchmark()
+{
+    # returns IO speed in B/s
+
+    # Temporarily override locale to deal with non-standard decimal separators
+    # (e.g. "," instead of ".").
+    # The awk script assumes bytes/second if the suffix is !~ [TGMK]B. Call me
+    # if your storage system does more than terabytes per second; I'll want to
+    # see that.
+    LC_ALL=C dd if=/dev/zero of=test_$$ bs=64k count=16k conv=fdatasync 2>&1 | \
+        awk -F, '
+            {
+                io=$NF
+            }
+            END {
+                if (io ~ /TB\/s/) {print 1000*1000*1000*1000*io}
+                else if (io ~ /GB\/s/) {print 1000*1000*1000*io}
+                else if (io ~ /MB\/s/) {print 1000*1000*io}
+                else if (io ~ /KB\/s/) {print 1000*io}
+                else { print 1*io}
+            }'
+    rm -f test_$$
+}
+
 if ! command_exists curl
 then
     printf '%s\n' 'This script requires curl, but it could not be found.' 1>&2
@@ -115,21 +148,18 @@ printf '\n'
 # dd disk test
 printf 'dd test\n'
 
-io1=$( ( dd if=/dev/zero of=test_$$ bs=64k count=16k conv=fdatasync && rm -f test_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-printf '    1st run:    %s\n' "$io1"
+io1=$( dd_benchmark )
+printf '    1st run:    %s\n' "$(printf '%d\n' "$io1" | Bps_to_MiBps)"
 
-io2=$( ( dd if=/dev/zero of=test_$$ bs=64k count=16k conv=fdatasync && rm -f test_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-printf '    2nd run:    %s\n' "$io2"
+io2=$( dd_benchmark )
+printf '    2nd run:    %s\n' "$(printf '%d\n' "$io2" | Bps_to_MiBps)"
 
-io3=$( ( dd if=/dev/zero of=test_$$ bs=64k count=16k conv=fdatasync && rm -f test_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-printf '    3rd run:    %s\n' "$io3"
+io3=$( dd_benchmark )
+printf '    3rd run:    %s\n' "$(printf '%d\n' "$io3" | Bps_to_MiBps)"
 
 # Calculating avg I/O (better approach with awk for non int values)
-ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
-ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
-ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
-ioavg=$( awk 'BEGIN{print int(('$ioraw1' + '$ioraw2' + '$ioraw3')/3)}' )
-printf '    average:    %d MB/s\n' "$ioavg"
+ioavg=$( awk 'BEGIN{print int(('"$io1"' + '"$io2"' + '"$io3"')/3)}' )
+printf '    average:    %s\n' "$(printf '%d\n' "$ioavg" | Bps_to_MiBps)"
 
 printf '\n'
 
