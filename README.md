@@ -49,3 +49,61 @@ Usage example
 ```
 (wget -qO- wget.racing/nench.sh | bash; wget -qO- wget.racing/nench.sh | bash) 2>&1 | tee nench.log
 ```
+
+Example output
+--------------
+
+Output from a VPS hosted with Vultr in Frankfurt:
+
+```
+-------------------------------------------------
+ nench.sh v2017.05.08 -- https://git.io/nench.sh
+ benchmark timestamp:    2017-05-08 20:36:54 UTC
+-------------------------------------------------
+
+Processor:    Virtual CPU a7769a6388d5
+CPU cores:    1
+Frequency:    2394.454 MHz
+RAM:          494M
+Swap:         871M
+Kernel:       Linux 3.16.0-4-amd64 x86_64
+
+Disks:
+vda  20G  HDD
+
+CPU: SHA256-hashing 500 MB
+    4.183 seconds
+CPU: bzip2-compressing 500 MB
+    6.830 seconds
+CPU: AES-encrypting 500 MB
+    1.636 seconds
+
+ioping: seek rate
+    min/avg/max/mdev = 148.6 us / 280.9 us / 9.22 ms / 234.7 us
+ioping: sequential speed
+    generated 2.15 k requests in 5.00 s, 536.2 MiB, 428 iops, 107.2 MiB/s
+
+dd test
+    1st run:    339.51 MiB/s
+    2nd run:    345.23 MiB/s
+    3rd run:    342.37 MiB/s
+    average:    342.37 MiB/s
+
+IPv4 speedtests
+    your IPv4:    108.61.179.xxxx
+
+    Cachefly CDN:         205.34 MiB/s
+    Leaseweb (NL):        140.55 MiB/s
+    Softlayer DAL (US):   0.08 MiB/s
+    Online.net (FR):      0.17 MiB/s
+    OVH BHS (CA):         11.13 MiB/s
+
+IPv6 speedtests
+    your IPv6:    2001:19f0:6c01:xxxx
+
+    Leaseweb (NL):        101.06 MiB/s
+    Softlayer DAL (US):   2.89 MiB/s
+    Online.net (FR):      0.18 MiB/s
+    OVH BHS (CA):         9.84 MiB/s
+-------------------------------------------------
+```
