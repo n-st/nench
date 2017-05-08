@@ -234,9 +234,7 @@ else
     printf 'No IPv6 connectivity detected\n'
 fi
 
-printf '%s\n' '-------------------------'
-
-printf '\n'
+printf '%s\n' '-------------------------------------------------'
 
 # delete downloaded ioping binary if script has been run straight from a pipe
 # (rather than a downloaded file)
