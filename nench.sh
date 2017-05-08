@@ -102,7 +102,7 @@ printf '%s\n' '-------------------------'
 
 printf '\n'
 
-curl -s --max-time 10 -o ioping.static http://bench.wget.racing/ioping.static
+curl -s --max-time 10 -o ioping.static http://wget.racing/ioping.static
 chmod +x ioping.static
 
 # Basic info
