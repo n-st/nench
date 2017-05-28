@@ -167,13 +167,13 @@ printf '\n'
 # ioping
 printf 'ioping: seek rate\n    '
 ./ioping.static -R -w 5 . | tail -n 1
-printf 'ioping: sequential speed\n    '
+printf 'ioping: sequential read speed\n    '
 ./ioping.static -RL -w 5 . | tail -n 2 | head -n 1
 
 printf '\n'
 
 # dd disk test
-printf 'dd test\n'
+printf 'dd: sequential write speed\n'
 
 if [ -z "$gnu_dd" ]
 then
