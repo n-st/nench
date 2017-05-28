@@ -75,11 +75,11 @@ dd_benchmark()
                 io=$NF
             }
             END {
-                if (io ~ /TB\/s/) {print 1000*1000*1000*1000*io}
-                else if (io ~ /GB\/s/) {print 1000*1000*1000*io}
-                else if (io ~ /MB\/s/) {print 1000*1000*io}
-                else if (io ~ /KB\/s/) {print 1000*io}
-                else { print 1*io}
+                if (io ~ /TB\/s/) {printf("%.0f\n", 1000*1000*1000*1000*io)}
+                else if (io ~ /GB\/s/) {printf("%.0f\n", 1000*1000*1000*io)}
+                else if (io ~ /MB\/s/) {printf("%.0f\n", 1000*1000*io)}
+                else if (io ~ /KB\/s/) {printf("%.0f\n", 1000*io)}
+                else { printf("%.0f", 1*io)}
             }'
     rm -f test_$$
 }
@@ -189,7 +189,7 @@ else
     printf '    3rd run:    %s\n' "$(printf '%d\n' "$io3" | Bps_to_MiBps)"
 
     # Calculating avg I/O (better approach with awk for non int values)
-    ioavg=$( awk 'BEGIN{print int(('"$io1"' + '"$io2"' + '"$io3"')/3)}' )
+    ioavg=$( awk 'BEGIN{printf("%.0f", ('"$io1"' + '"$io2"' + '"$io3"')/3)}' )
     printf '    average:    %s\n' "$(printf '%d\n' "$ioavg" | Bps_to_MiBps)"
 fi
 
