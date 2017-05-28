@@ -95,6 +95,24 @@ then
     exit 1
 fi
 
+if command_exists gdd
+then
+    gnu_dd='gdd'
+elif command_exists dd
+then
+    gnu_dd='dd'
+else
+    printf '%s\n' 'This script requires dd, but it could not be found.' 1>&2
+    exit 1
+fi
+
+if ! "$gnu_dd" --version > /dev/null 2>&1
+then
+    printf '%s\n' 'It seems your system only has a non-GNU version of dd.'
+    printf '%s\n' 'dd write tests disabled.'
+    gnu_dd=''
+fi
+
 printf '%s\n' '-------------------------------------------------'
 printf ' nench.sh v2017.05.08 -- https://git.io/nench.sh\n'
 date -u '+ benchmark timestamp:    %F %T UTC'
@@ -157,18 +175,23 @@ printf '\n'
 # dd disk test
 printf 'dd test\n'
 
-io1=$( dd_benchmark )
-printf '    1st run:    %s\n' "$(printf '%d\n' "$io1" | Bps_to_MiBps)"
+if [ -z "$gnu_dd" ]
+then
+    printf '    %s\n' '[disabled due to missing GNU dd]'
+else
+    io1=$( dd_benchmark )
+    printf '    1st run:    %s\n' "$(printf '%d\n' "$io1" | Bps_to_MiBps)"
 
-io2=$( dd_benchmark )
-printf '    2nd run:    %s\n' "$(printf '%d\n' "$io2" | Bps_to_MiBps)"
+    io2=$( dd_benchmark )
+    printf '    2nd run:    %s\n' "$(printf '%d\n' "$io2" | Bps_to_MiBps)"
 
-io3=$( dd_benchmark )
-printf '    3rd run:    %s\n' "$(printf '%d\n' "$io3" | Bps_to_MiBps)"
+    io3=$( dd_benchmark )
+    printf '    3rd run:    %s\n' "$(printf '%d\n' "$io3" | Bps_to_MiBps)"
 
-# Calculating avg I/O (better approach with awk for non int values)
-ioavg=$( awk 'BEGIN{print int(('"$io1"' + '"$io2"' + '"$io3"')/3)}' )
-printf '    average:    %s\n' "$(printf '%d\n' "$ioavg" | Bps_to_MiBps)"
+    # Calculating avg I/O (better approach with awk for non int values)
+    ioavg=$( awk 'BEGIN{print int(('"$io1"' + '"$io2"' + '"$io3"')/3)}' )
+    printf '    average:    %s\n' "$(printf '%d\n' "$ioavg" | Bps_to_MiBps)"
+fi
 
 printf '\n'
 
