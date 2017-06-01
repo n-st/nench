@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ##########
 # nench.sh ("new bench.sh")
