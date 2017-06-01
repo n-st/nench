@@ -172,9 +172,9 @@ printf '\n'
 
 # ioping
 printf 'ioping: seek rate\n    '
-"$ioping_cmd" -R -w 5 . | tail -n 1
+"$ioping_cmd" -DR -w 5 . | tail -n 1
 printf 'ioping: sequential read speed\n    '
-"$ioping_cmd" -RL -w 5 . | tail -n 2 | head -n 1
+"$ioping_cmd" -DRL -w 5 . | tail -n 2 | head -n 1
 
 printf '\n'
 
