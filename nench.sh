@@ -30,7 +30,14 @@ B_to_MiB()
 
 redact_ip()
 {
-    printf '%s\n' "$1" | sed 's!\(\([0-9a-f]\+[.:]\)\{3\}\).\+!\1xxxx!'
+    case "$1" in
+        *.*)
+            printf '%s.xxxx\n' "$(printf '%s\n' "$1" | cut -d . -f 1-3)"
+            ;;
+        *:*)
+            printf '%s:xxxx\n' "$(printf '%s\n' "$1" | cut -d : -f 1-3)"
+            ;;
+    esac
 }
 
 finish()
