@@ -23,6 +23,11 @@ Bps_to_MiBps()
     awk '{ printf "%.2f MiB/s\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "error" } }'
 }
 
+B_to_MiB()
+{
+    awk '{ printf "%.0f MiB\n", $0 / 1024 / 1024 } END { if (NR == 0) { print "error" } }'
+}
+
 redact_ip()
 {
     printf '%s\n' "$1" | sed 's!\(\([0-9a-f]\+[.:]\)\{3\}\).\+!\1xxxx!'
@@ -130,21 +135,42 @@ else
 fi
 
 # Basic info
-printf 'Processor:    '
-awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//'
-printf 'CPU cores:    '
-awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo
-printf 'Frequency:    '
-awk -F: ' /cpu MHz/ {freq=$2} END {print freq " MHz"}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//'
-printf 'RAM:          '
-free -h | awk 'NR==2 {print $2}'
-if [ "$(swapon -s | wc -l)" -lt 2 ]
+if [ "$(uname)" = "Linux" ]
 then
-    printf 'Swap:         -\n'
+    printf 'Processor:    '
+    awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//'
+    printf 'CPU cores:    '
+    awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo
+    printf 'Frequency:    '
+    awk -F: ' /cpu MHz/ {freq=$2} END {print freq " MHz"}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//'
+    printf 'RAM:          '
+    free -h | awk 'NR==2 {print $2}'
+    if [ "$(swapon -s | wc -l)" -lt 2 ]
+    then
+        printf 'Swap:         -\n'
+    else
+        printf 'Swap:         '
+        free -h | awk 'NR==4 {printf $2}'
+        printf '\n'
+    fi
 else
-    printf 'Swap:         '
-    free -h | awk 'NR==4 {printf $2}'
-    printf '\n'
+    # we'll assume FreeBSD, might work on other BSDs too
+    printf 'Processor:    '
+    sysctl -n hw.model
+    printf 'CPU cores:    '
+    sysctl -n hw.ncpu
+    printf 'Frequency:    '
+    grep -Eo -- '[0-9.]+-MHz' /var/run/dmesg.boot | tr -- '-' ' '
+    printf 'RAM:          '
+    sysctl -n hw.physmem | B_to_MiB
+
+    if [ "$(swapinfo | wc -l)" -lt 2 ]
+    then
+        printf 'Swap:         -\n'
+    else
+        printf 'Swap:         '
+        swapinfo -k | awk 'NR>1 && $1!="Total" {total+=$2} END {print total*1024}' | B_to_MiB
+    fi
 fi
 printf 'Kernel:       '
 uname -s -r -m
@@ -152,7 +178,15 @@ uname -s -r -m
 printf '\n'
 
 printf 'Disks:\n'
-lsblk --nodeps --noheadings --output NAME,SIZE,ROTA --exclude 1,2,11 | sort | awk '{if ($3 == 0) {$3="SSD"} else {$3="HDD"}; print}' | column -t
+if command_exists lsblk
+then
+    lsblk --nodeps --noheadings --output NAME,SIZE,ROTA --exclude 1,2,11 | sort | awk '{if ($3 == 0) {$3="SSD"} else {$3="HDD"}; print}' | column -t
+elif [ -r "/var/run/dmesg.boot" ]
+then
+    awk '/(ad|ada|da|vtblk)[0-9]+: [0-9]+.B/ { print $1, $2/1024, "GiB" }' /var/run/dmesg.boot
+else
+    printf '[ no data available ]'
+fi
 
 printf '\n'
 
