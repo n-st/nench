@@ -120,8 +120,14 @@ printf '%s\n' '-------------------------------------------------'
 
 printf '\n'
 
-curl -s --max-time 10 -o ioping.static http://wget.racing/ioping.static
-chmod +x ioping.static
+if ! command_exists ioping
+then
+    curl -s --max-time 10 -o ioping.static http://wget.racing/ioping.static
+    chmod +x ioping.static
+    ioping_cmd="./ioping.static"
+else
+    ioping_cmd="ioping"
+fi
 
 # Basic info
 printf 'Processor:    '
@@ -166,9 +172,9 @@ printf '\n'
 
 # ioping
 printf 'ioping: seek rate\n    '
-./ioping.static -R -w 5 . | tail -n 1
+"$ioping_cmd" -R -w 5 . | tail -n 1
 printf 'ioping: sequential read speed\n    '
-./ioping.static -RL -w 5 . | tail -n 2 | head -n 1
+"$ioping_cmd" -RL -w 5 . | tail -n 2 | head -n 1
 
 printf '\n'
 
