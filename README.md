@@ -14,6 +14,7 @@ IPv4- and v6-enabled download at http://wget.racing/nench.sh
   minutes for that one slow speedtest from halfway around the globe — but
   thanks to the power of `curl -w`, you still get to see what speed your server
   achieved during those 10 seconds
+- successfully tested on Arch Linux, Debian, FreeBSD, and Ubuntu
 
 The script was originally intended to be used only by me, so I didn't put much
 effort into ensuring safety, security, and interoperability.  
