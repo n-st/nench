@@ -69,7 +69,7 @@ dd_benchmark()
     # The awk script assumes bytes/second if the suffix is !~ [TGMK]B. Call me
     # if your storage system does more than terabytes per second; I'll want to
     # see that.
-    LC_ALL=C dd if=/dev/zero of=test_$$ bs=64k count=16k conv=fdatasync 2>&1 | \
+    LC_ALL=C "$gnu_dd" if=/dev/zero of=test_$$ bs=64k count=16k conv=fdatasync 2>&1 | \
         awk -F, '
             {
                 io=$NF
