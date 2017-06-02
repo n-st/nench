@@ -187,7 +187,7 @@ printf '\n'
 printf 'Disks:\n'
 if command_exists lsblk
 then
-    lsblk --nodeps --noheadings --output NAME,SIZE,ROTA --exclude 1,2,11 | sort | awk '{if ($3 == 0) {$3="SSD"} else {$3="HDD"}; print}' | column -t
+    lsblk --nodeps --noheadings --output NAME,SIZE,ROTA --exclude 1,2,11 | sort | awk '{if ($3 == 0) {$3="SSD"} else {$3="HDD"}; printf("%-3s%8s%5s\n", $1, $2, $3)}'
 elif [ -r "/var/run/dmesg.boot" ]
 then
     awk '/(ad|ada|da|vtblk)[0-9]+: [0-9]+.B/ { print $1, $2/1024, "GiB" }' /var/run/dmesg.boot
