@@ -6,7 +6,7 @@
 # current version at https://github.com/n-st/nench
 # - loosely based on the established freevps.us/bench.sh
 # - includes CPU and ioping measurements
-# - reduced number of speedtests (9 x 100 MB), while retaining useful European
+# - reduced number of speedtests (11 x 100 MB), while retaining useful European
 #   and North American POPs
 # - runs IPv6 speedtest by default (if the server has IPv6 connectivity)
 # Run using `curl -s bench.wget.racing | bash`
@@ -126,7 +126,7 @@ then
 fi
 
 printf '%s\n' '-------------------------------------------------'
-printf ' nench.sh v2017.06.01 -- https://git.io/nench.sh\n'
+printf ' nench.sh v2018.02.26 -- https://git.io/nench.sh\n'
 date -u '+ benchmark timestamp:    %F %T UTC'
 printf '%s\n' '-------------------------------------------------'
 
@@ -255,6 +255,11 @@ then
     download_benchmark -4 http://cachefly.cachefly.net/100mb.test | \
         Bps_to_MiBps
 
+    printf '    Fastly CDN:           '
+    # linux-4.0.tar.gz: 118.4 MiB
+    download_benchmark -4 https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.0.tar.gz | \
+        Bps_to_MiBps
+
     printf '    Leaseweb (NL):        '
     download_benchmark -4 http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
         Bps_to_MiBps
@@ -283,6 +288,11 @@ then
     printf 'IPv6 speedtests\n'
     printf '    your IPv6:    %s\n' "$(redact_ip "$ipv6")"
     printf '\n'
+
+    printf '    Fastly CDN:           '
+    # linux-4.0.tar.gz: 118.4 MiB
+    download_benchmark -6 https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.0.tar.gz | \
+        Bps_to_MiBps
 
     printf '    Leaseweb (NL):        '
     download_benchmark -6 http://mirror.nl.leaseweb.net/speedtest/100mb.bin | \
