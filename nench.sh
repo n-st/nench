@@ -157,7 +157,7 @@ then
         printf 'Swap:         -\n'
     else
         printf 'Swap:         '
-        free -h | awk 'NR==4 {printf $2}'
+        free -h | awk '/Swap/ {printf $2}'
         printf '\n'
     fi
 else
@@ -185,12 +185,15 @@ uname -s -r -m
 printf '\n'
 
 printf 'Disks:\n'
-if command_exists lsblk
+if command_exists lsblk && [ -n "$(lsblk)" ]
 then
     lsblk --nodeps --noheadings --output NAME,SIZE,ROTA --exclude 1,2,11 | sort | awk '{if ($3 == 0) {$3="SSD"} else {$3="HDD"}; printf("%-3s%8s%5s\n", $1, $2, $3)}'
 elif [ -r "/var/run/dmesg.boot" ]
 then
     awk '/(ad|ada|da|vtblk)[0-9]+: [0-9]+.B/ { print $1, $2/1024, "GiB" }' /var/run/dmesg.boot
+elif command_exists df
+then
+    df -h --output=source,fstype,size,itotal | awk 'NR == 1 || /^\/dev/'
 else
     printf '[ no data available ]'
 fi
