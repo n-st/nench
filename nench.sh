@@ -11,6 +11,7 @@
 # - runs IPv6 speedtest by default (if the server has IPv6 connectivity)
 # Run using `curl -s bench.wget.racing | bash`
 # or `wget -qO- bench.wget.racing | bash`
+# - list of possibly required packages: curl,gawk,coreutils,util-linux,procps,ioping
 ##########
 
 command_exists()
