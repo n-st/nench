@@ -127,7 +127,7 @@ then
 fi
 
 printf '%s\n' '-------------------------------------------------'
-printf ' nench.sh v2017.06.01 -- https://git.io/nench.sh\n'
+printf ' nench.sh v2018.04.14 -- https://git.io/nench.sh\n'
 date -u '+ benchmark timestamp:    %F %T UTC'
 printf '%s\n' '-------------------------------------------------'
 
