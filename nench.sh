@@ -61,8 +61,8 @@ command_benchmark()
 
     if command_exists "$1"
     then
-        time "$gnu_dd" if=/dev/zero bs=1M count=500 2> /dev/null | \
-            "$@" > /dev/null
+        ( time "$gnu_dd" if=/dev/zero bs=1M count=500 2> /dev/null | \
+            "$@" > /dev/null ) 2>&1
     else
         if [ "$QUIET" -ne 1 ]
         then
