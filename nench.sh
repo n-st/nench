@@ -168,7 +168,7 @@ else
     printf 'CPU cores:    '
     sysctl -n hw.ncpu
     printf 'Frequency:    '
-    grep -Eo -- '[0-9.]+-MHz' /var/run/dmesg.boot | tr -- '-' ' '
+    grep -Eo -- '[0-9.]+-MHz' /var/run/dmesg.boot | tr -- '-' ' ' | sort -u
     printf 'RAM:          '
     sysctl -n hw.physmem | B_to_MiB
 
@@ -191,7 +191,7 @@ then
     lsblk --nodeps --noheadings --output NAME,SIZE,ROTA --exclude 1,2,11 | sort | awk '{if ($3 == 0) {$3="SSD"} else {$3="HDD"}; printf("%-3s%8s%5s\n", $1, $2, $3)}'
 elif [ -r "/var/run/dmesg.boot" ]
 then
-    awk '/(ad|ada|da|vtblk)[0-9]+: [0-9]+.B/ { print $1, $2/1024, "GiB" }' /var/run/dmesg.boot
+    awk '/(ad|ada|da|vtblk)[0-9]+: [0-9]+.B/ { print $1, $2/1024, "GiB" }' /var/run/dmesg.boot | sort -u
 elif command_exists df
 then
     df -h --output=source,fstype,size,itotal | awk 'NR == 1 || /^\/dev/'
