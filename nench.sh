@@ -211,7 +211,7 @@ printf 'CPU: bzip2-compressing 500 MB\n    '
 command_benchmark bzip2
 
 printf 'CPU: AES-encrypting 500 MB\n    '
-command_benchmark openssl enc -e -aes-256-cbc -pass pass:12345678
+command_benchmark openssl enc -e -aes-256-cbc -pass pass:12345678 | sed '/^\*\*\* WARNING : deprecated key derivation used\.$/d;/^Using -iter or -pbkdf2 would be better\.$/d'
 
 printf '\n'
 
