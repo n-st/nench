@@ -127,7 +127,7 @@ then
 fi
 
 printf '%s\n' '-------------------------------------------------'
-printf ' nench.sh v2019.03.01 -- https://git.io/nench.sh\n'
+printf ' nench.sh v2019.06.29 -- https://git.io/nench.sh\n'
 date -u '+ benchmark timestamp:    %F %T UTC'
 printf '%s\n' '-------------------------------------------------'
 
@@ -272,7 +272,7 @@ then
         Bps_to_MiBps
 
     printf '    OVH BHS (CA):         '
-    download_benchmark -4 http://proof.ovh.ca/files/100Mio.dat | \
+    download_benchmark -4 http://speedtest-bhs.as16276.ovh/files/100Mio.dat | \
         Bps_to_MiBps
 
 else
@@ -301,7 +301,7 @@ then
         Bps_to_MiBps
 
     printf '    OVH BHS (CA):         '
-    download_benchmark -6 http://proof.ovh.ca/files/100Mio.dat | \
+    download_benchmark -6 http://speedtest-bhs.as16276.ovh/files/100Mio.dat | \
         Bps_to_MiBps
 
 else
