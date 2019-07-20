@@ -127,7 +127,7 @@ then
 fi
 
 printf '%s\n' '-------------------------------------------------'
-printf ' nench.sh v2019.06.29 -- https://git.io/nench.sh\n'
+printf ' nench.sh v2019.07.20 -- https://git.io/nench.sh\n'
 date -u '+ benchmark timestamp:    %F %T UTC'
 printf '%s\n' '-------------------------------------------------'
 
@@ -264,7 +264,7 @@ then
         Bps_to_MiBps
 
     printf '    Softlayer DAL (US):   '
-    download_benchmark -4 http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
+    download_benchmark -4 http://speedtest.dal06.softlayer.com/downloads/test100.zip | \
         Bps_to_MiBps
 
     printf '    Online.net (FR):      '
@@ -293,7 +293,7 @@ then
         Bps_to_MiBps
 
     printf '    Softlayer DAL (US):   '
-    download_benchmark -6 http://speedtest.dal01.softlayer.com/downloads/test100.zip | \
+    download_benchmark -6 http://speedtest.dal06.softlayer.com/downloads/test100.zip | \
         Bps_to_MiBps
 
     printf '    Online.net (FR):      '
